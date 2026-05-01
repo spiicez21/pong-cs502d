@@ -66,6 +66,11 @@ function love.update(dt)
     if love.keyboard.isDown('down') then
         p2y = math.min(VIRTUAL_HEIGHT-20,p2y + PADDLE_SPEED * dt)
     end
+
+    if gamestate == 'play' then
+        ballx = ballx + balldx * dt
+        bally = bally + balldy * dt
+    end
 end
 
 function love.draw()
