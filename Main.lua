@@ -1,4 +1,4 @@
-
+﻿
 WINDOW_HEIGHT = 720
 WINDOW_WIDTH = 1280
 
@@ -19,6 +19,7 @@ function love.load()
 
     math.randomseed(os.time())
 
+    servingPlayer = 1
     gamestate = 'start'
 
     player1 = Paddle:new(10, 30, 5, 20)
@@ -61,6 +62,20 @@ function love.update(dt)
     end
 
     if gamestate == 'play' then
+        if ball.x < 0 then
+            servingPlayer = 1
+            p2score = p2score + 1
+            ball:reset()
+            gamestate = 'serve'
+        end
+
+        if ball.x > VIRTUAL_WIDTH then
+            servingPlayer = 2
+            p1score = p1score + 1
+            ball:reset()
+            gamestate = 'serve'
+        end
+
         if ball:collides(player1) then
             ball.dx = -ball.dx * 1.03
             ball.x = player1.x + 5
@@ -104,19 +119,38 @@ function love.keypressed(key)
         love.event.quit()
     elseif key == 'enter' or key == 'return' then
         if gamestate == 'start' then
+            gamestate = 'serve'
+        elseif gamestate == 'serve' then
             gamestate = 'play'
-        else
-            gamestate = 'start'
+            ball:serve(servingPlayer)
+        elseif gamestate == 'done' then
+            gamestate = 'serve'
             ball:reset()
+            p1score = 0
+            p2score = 0
+
+            if winningPlayer == 1 then
+                servingPlayer = 2
+            else
+                servingPlayer = 1
+            end
         end
     end
 end
 
 function love.draw()
     push.start()
-    love.graphics.clear(40/255, 45/255, 52/255,1)
+    love.graphics.clear(40/255, 45/255, 52/255, 1)
     love.graphics.setFont(smallfont)
-    love.graphics.printf("Welcome to SPiceZ Ping Pong!", 0, 10, VIRTUAL_WIDTH, 'center')
+    
+    if gamestate == 'start' then
+        love.graphics.printf("Welcome to SPiceZ Ping Pong!", 0, 10, VIRTUAL_WIDTH, 'center')
+        love.graphics.printf("Press Enter to Start", 0, 20, VIRTUAL_WIDTH, 'center')
+    elseif gamestate == 'serve' then
+        love.graphics.printf("Player " .. tostring(servingPlayer) .. "'s serve!", 0, 10, VIRTUAL_WIDTH, 'center')
+        love.graphics.printf("Press Enter to Serve", 0, 20, VIRTUAL_WIDTH, 'center')
+    end
+
     love.graphics.setFont(largefont)
     love.graphics.print(tostring(p2score), VIRTUAL_WIDTH/2-50, 30)
     love.graphics.print(tostring(p1score), VIRTUAL_WIDTH/2+50, 30)
