@@ -8,12 +8,20 @@ VIRTUAL_HEIGHT = 243
 push = require "push"
 
 function love.load()
-    -- Set up the game window
-    love.graphics.setDefaultFilter("nearest", "nearest")
-    love.window.setTitle("SPiceZ Ping Pong")
+    love.graphics.setDefaultFilter('nearest', 'nearest')
+   
+    largefont = love.graphics.newFont('font.ttf', 32)
+    smallfont = love.graphics.newFont('font.ttf', 8)
+
+    love.window.setTitle('SPiceZ Ping Pong')
+    love.window.setMode(WINDOW_WIDTH, WINDOW_HEIGHT, {
+        fullscreen = false,
+        resizable = false,
+        vsync = true
+    })
     
     push.setupScreen(VIRTUAL_WIDTH, VIRTUAL_HEIGHT, {
-        upscale = "normal",
+        upscale = 'normal',
         fullscreen = false,
         resizable = false,
         vsync = true
@@ -21,13 +29,15 @@ function love.load()
 end
 
 function love.keypressed(key)
-    if key == "escape" then
+    if key == 'escape' then
         love.event.quit()
     end
 end
 
 function love.draw()
     push.start()
-    love.graphics.printf("Welcome to SPiceZ Ping Pong!", 0, VIRTUAL_HEIGHT/2-6, VIRTUAL_WIDTH, "center")
+    love.graphics.clear(45/255, 50/255, 20/255,1)
+    love.graphics.setFont(smallfont)
+    love.graphics.printf("Welcome to SPiceZ Ping Pong!", 0, VIRTUAL_HEIGHT/2, VIRTUAL_WIDTH, 'center')
     push.finish()
 end
