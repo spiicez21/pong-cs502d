@@ -13,6 +13,9 @@ function love.load()
     largefont = love.graphics.newFont('font.ttf', 32)
     smallfont = love.graphics.newFont('font.ttf', 8)
 
+    p1score = 0
+    p2score = 0
+
     love.window.setTitle('SPiceZ Ping Pong')
     love.window.setMode(WINDOW_WIDTH, WINDOW_HEIGHT, {
         fullscreen = false,
@@ -36,9 +39,12 @@ end
 
 function love.draw()
     push.start()
-    love.graphics.clear(45/255, 50/255, 20/255,1)
+    love.graphics.clear(40/255, 45/255, 52/255,1)
     love.graphics.setFont(smallfont)
     love.graphics.printf("Welcome to SPiceZ Ping Pong!", 0, 10, VIRTUAL_WIDTH, 'center')
+    love.graphics.setFont(largefont)
+    love.graphics.print(tostring(p2score), VIRTUAL_WIDTH/2-50, 30)
+    love.graphics.print(tostring(p1score), VIRTUAL_WIDTH/2+50, 30)
 
     --paddle1
     love.graphics.rectangle('fill', 10, 30, 5, 20)
