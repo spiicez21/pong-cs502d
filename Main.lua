@@ -8,6 +8,8 @@ VIRTUAL_HEIGHT = 243
 PADDLE_SPEED = 200
 
 push = require "push"
+require "Paddle"
+require "Ball"
 
 function love.load()
     love.graphics.setDefaultFilter('nearest', 'nearest')
@@ -15,21 +17,16 @@ function love.load()
     largefont = love.graphics.newFont('font.ttf', 32)
     smallfont = love.graphics.newFont('font.ttf', 8)
 
+    math.randomseed(os.time())
+
     gamestate = 'start'
 
-    ballx = VIRTUAL_WIDTH/2 - 2
-    bally = VIRTUAL_HEIGHT/2 - 2
-
-    balldx = math.random(2) == 1 and 100 or -100
-    balldy = math.random(-50, 50)
+    player1 = Paddle:new(10, 30, 5, 20)
+    player2 = Paddle:new(VIRTUAL_WIDTH - 15, VIRTUAL_HEIGHT - 50, 5, 20)
+    ball = Ball:new(VIRTUAL_WIDTH / 2 - 2, VIRTUAL_HEIGHT / 2 - 2, 4, 4)
 
     p1score = 0
     p2score = 0
-    
-    math.randomseed(os.time())
-
-    p1y= 30
-    p2y = VIRTUAL_HEIGHT - 30
 
     love.window.setTitle('SPiceZ Ping Pong')
     love.window.setMode(WINDOW_WIDTH, WINDOW_HEIGHT, {
@@ -46,42 +43,41 @@ function love.load()
     })
 end
 
-function love.keypressed(key)
-    if key == 'escape' then
-        love.event.quit()
-    end
-end
-
 function love.update(dt)
     if love.keyboard.isDown('w') then
-        p1y = math.max(0, p1y - PADDLE_SPEED * dt )
-    end
-    if love.keyboard.isDown('s') then
-        p1y = math.min (VIRTUAL_HEIGHT-20,p1y + PADDLE_SPEED * dt)
+        player1.dy = -PADDLE_SPEED
+    elseif love.keyboard.isDown('s') then
+        player1.dy = PADDLE_SPEED
+    else
+        player1.dy = 0
     end
 
     if love.keyboard.isDown('up') then
-        p2y = math.max(0,p2y - PADDLE_SPEED * dt)
-    end
-    if love.keyboard.isDown('down') then
-        p2y = math.min(VIRTUAL_HEIGHT-20,p2y + PADDLE_SPEED * dt)
+        player2.dy = -PADDLE_SPEED
+    elseif love.keyboard.isDown('down') then
+        player2.dy = PADDLE_SPEED
+    else
+        player2.dy = 0
     end
 
-    if love.keyboard.isDown('return') then
+    if gamestate == 'play' then
+        ball:update(dt)
+    end
+
+    player1:update(dt)
+    player2:update(dt)
+end
+
+function love.keypressed(key)
+    if key == 'escape' then
+        love.event.quit()
+    elseif key == 'enter' or key == 'return' then
         if gamestate == 'start' then
             gamestate = 'play'
         else
             gamestate = 'start'
-            ballx = VIRTUAL_WIDTH/2 - 2
-            bally = VIRTUAL_HEIGHT/2 - 2
-
-            balldx = math.random(2) == 1 and 100 or -100
-            balldy = math.random(-50, 50)
+            ball:reset()
         end
-    end
-    if gamestate == 'play' then
-        ballx = ballx + balldx * dt
-        bally = bally + balldy * dt
     end
 end
 
@@ -94,12 +90,9 @@ function love.draw()
     love.graphics.print(tostring(p2score), VIRTUAL_WIDTH/2-50, 30)
     love.graphics.print(tostring(p1score), VIRTUAL_WIDTH/2+50, 30)
 
-    --paddle1
-    love.graphics.rectangle('fill', 10, p1y, 5, 20)
-    --paddle2
-    love.graphics.rectangle('fill', VIRTUAL_WIDTH - 15, p2y, 5, 20)
-    --ball
-    love.graphics.rectangle('fill', ballx, bally, 4, 4)
+    player1:render()
+    player2:render()
+    ball:render()
 
     push.finish()
 end
