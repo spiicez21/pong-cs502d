@@ -68,7 +68,16 @@ function love.update(dt)
     end
 
     if love.keyboard.isDown('return') then
-        gamestate = 'play'
+        if gamestate == 'start' then
+            gamestate = 'play'
+        else
+            gamestate = 'start'
+            ballx = VIRTUAL_WIDTH/2 - 2
+            bally = VIRTUAL_HEIGHT/2 - 2
+
+            balldx = math.random(2) == 1 and 100 or -100
+            balldy = math.random(-50, 50)
+        end
     end
     if gamestate == 'play' then
         ballx = ballx + balldx * dt
