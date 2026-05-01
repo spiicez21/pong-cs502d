@@ -38,6 +38,14 @@ function love.draw()
     push.start()
     love.graphics.clear(45/255, 50/255, 20/255,1)
     love.graphics.setFont(smallfont)
-    love.graphics.printf("Welcome to SPiceZ Ping Pong!", 0, VIRTUAL_HEIGHT/2, VIRTUAL_WIDTH, 'center')
+    love.graphics.printf("Welcome to SPiceZ Ping Pong!", 0, 10, VIRTUAL_WIDTH, 'center')
+
+    --paddle1
+    love.graphics.rectangle('fill', 10, 30, 5, 20)
+    --paddle2
+    love.graphics.rectangle('fill', VIRTUAL_WIDTH - 15, VIRTUAL_HEIGHT - 50, 5, 20)
+    --ball
+    love.graphics.rectangle('fill', VIRTUAL_WIDTH/2 - 2, VIRTUAL_HEIGHT/2 - 2, 4, 4)
+
     push.finish()
 end
