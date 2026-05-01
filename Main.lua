@@ -65,10 +65,19 @@ function love.update(dt)
         player1.dy = 0
     end
 
-    if love.keyboard.isDown('up') then
-        player2.dy = -PADDLE_SPEED
-    elseif love.keyboard.isDown('down') then
-        player2.dy = PADDLE_SPEED
+    -- if love.keyboard.isDown("up") then
+    --     player2.dy = -PADDLE_SPEED
+    -- elseif love.keyboard.isDown("down") then
+    --     player2.dy = PADDLE_SPEED
+    -- else
+    --     player2.dy = 0
+    -- end
+
+    -- simple AI for player 2
+    if ball.y < player2.y + player2.height / 2 then
+        player2.dy = -PADDLE_SPEED * 0.8  -- slightly slower than human
+    elseif ball.y > player2.y + player2.height / 2 then
+        player2.dy = PADDLE_SPEED * 0.8
     else
         player2.dy = 0
     end
