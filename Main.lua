@@ -17,6 +17,12 @@ function love.load()
     largefont = love.graphics.newFont('font.ttf', 32)
     smallfont = love.graphics.newFont('font.ttf', 8)
 
+    sounds = {
+        ['paddle_hit'] = love.audio.newSource('sounds/paddle_hit.wav', 'static'),
+        ['score'] = love.audio.newSource('sounds/score.wav', 'static'),
+        ['wall_hit'] = love.audio.newSource('sounds/wall_hit.wav', 'static')
+    }
+
     math.randomseed(os.time())
 
     servingPlayer = 1
@@ -65,6 +71,9 @@ function love.update(dt)
 
     if gamestate == 'play' then
         if ball.x < 0 then
+            servingPlayer = 1
+            p2score = p2score + 1
+            sounds['score']:play()
 
             if p2score == 10 then
                 winningPlayer = 2
@@ -78,6 +87,7 @@ function love.update(dt)
         if ball.x > VIRTUAL_WIDTH then
             servingPlayer = 2
             p1score = p1score + 1
+            sounds['score']:play()
 
             if p1score == 10 then
                 winningPlayer = 1
@@ -85,13 +95,11 @@ function love.update(dt)
             else
                 gamestate = 'serve'
                 ball:reset()
-            end 
-            ball:reset()
-            gamestate = 'serve'
+            end
         end
 
         if ball:collides(player1) then
-            ball.dx = -ball.dx * 1.03
+            ball.dx = -ball.dx * 1.1
             ball.x = player1.x + 5
 
             if ball.dy < 0 then
@@ -99,9 +107,12 @@ function love.update(dt)
             else
                 ball.dy = math.random(10, 150)
             end
+
+            sounds['paddle_hit']:play()
         end
+
         if ball:collides(player2) then
-            ball.dx = -ball.dx * 1.03
+            ball.dx = -ball.dx * 1.1
             ball.x = player2.x - 4
 
             if ball.dy < 0 then
@@ -109,16 +120,20 @@ function love.update(dt)
             else
                 ball.dy = math.random(10, 150)
             end
+
+            sounds['paddle_hit']:play()
         end
 
         if ball.y <= 0 then
             ball.y = 0
             ball.dy = -ball.dy
+            sounds['wall_hit']:play()
         end
 
         if ball.y >= VIRTUAL_HEIGHT - 4 then
             ball.y = VIRTUAL_HEIGHT - 4
             ball.dy = -ball.dy
+            sounds['wall_hit']:play()
         end
 
         ball:update(dt)
