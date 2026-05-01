@@ -1,4 +1,4 @@
-﻿
+
 WINDOW_HEIGHT = 720
 WINDOW_WIDTH = 1280
 
@@ -47,9 +47,13 @@ function love.load()
     push.setupScreen(VIRTUAL_WIDTH, VIRTUAL_HEIGHT, {
         upscale = 'normal',
         fullscreen = false,
-        resizable = false,
+        resizable = true,
         vsync = true
     })
+end
+
+function love.resize(w, h)
+    push.resize(w, h)
 end
 
 function love.update(dt)
