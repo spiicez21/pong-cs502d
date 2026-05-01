@@ -94,5 +94,13 @@ function love.draw()
     player2:render()
     ball:render()
 
+    displayfps()
+
     push.finish()
+end
+
+function displayfps()
+    love.graphics.setFont(smallfont)
+    love.graphics.setColor(1, 1, 1, 1)
+    love.graphics.print("FPS: " .. tostring(love.timer.getFPS()), 10, 10)
 end
