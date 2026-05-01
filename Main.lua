@@ -29,6 +29,8 @@ function love.load()
     p1score = 0
     p2score = 0
 
+    winningPlayer = 0
+
     love.window.setTitle('SPiceZ Ping Pong')
     love.window.setMode(WINDOW_WIDTH, WINDOW_HEIGHT, {
         fullscreen = false,
@@ -63,15 +65,27 @@ function love.update(dt)
 
     if gamestate == 'play' then
         if ball.x < 0 then
-            servingPlayer = 1
-            p2score = p2score + 1
-            ball:reset()
-            gamestate = 'serve'
+
+            if p2score == 10 then
+                winningPlayer = 2
+                gamestate = 'done'
+            else
+                gamestate = 'serve'
+                ball:reset()
+            end
         end
 
         if ball.x > VIRTUAL_WIDTH then
             servingPlayer = 2
             p1score = p1score + 1
+
+            if p1score == 10 then
+                winningPlayer = 1
+                gamestate = 'done'
+            else
+                gamestate = 'serve'
+                ball:reset()
+            end 
             ball:reset()
             gamestate = 'serve'
         end
@@ -137,7 +151,12 @@ function love.keypressed(key)
         end
     end
 end
-
+if gamestate == 'done' then
+        love.graphics.setFont(largefont)
+        love.graphics.printf("Player " .. tostring(winningPlayer) .. " wins!", 0, 10, VIRTUAL_WIDTH, 'center')
+        love.graphics.setFont(smallfont)
+        love.graphics.printf("Press Enter to restart!", 0, 50, VIRTUAL_WIDTH, 'center')
+end
 function love.draw()
     push.start()
     love.graphics.clear(40/255, 45/255, 52/255, 1)
